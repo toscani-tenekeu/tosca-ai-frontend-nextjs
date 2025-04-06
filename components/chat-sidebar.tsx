@@ -129,7 +129,7 @@ export function ChatSidebar({
         {showSettings && (
           <div className="mt-2 p-2 glass-card space-y-2 animate-accordion-down">
             <div className="space-y-2">
-              <p className="text-xs font-medium text-muted-foreground">API DeepSeek</p>
+              <p className="text-xs font-medium text-muted-foreground">API DeepSeek & Hugging Face</p>
               <div className="flex gap-1">
                 <input
                   type="password"

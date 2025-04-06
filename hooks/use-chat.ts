@@ -89,11 +89,17 @@ export function useChat() {
   const sendMessage = async (content: string) => {
     if (!currentConversationId) return
 
+    // Remplacer les mentions de DeepSeek, Chine, etc.
+    const modifiedContent = content
+      .replace(/deepseek/gi, "Tosca AI")
+      .replace(/\bchine\b/gi, "Cameroun")
+      .replace(/chinoise/gi, "Camerounaise")
+
     // Add user message
     const userMessage: Message = {
       id: uuidv4(),
       role: "user",
-      content,
+      content: modifiedContent,
       type: MessageType.TEXT,
       timestamp: new Date().toISOString(),
     }
@@ -103,7 +109,7 @@ export function useChat() {
 
     try {
       // Récupérer la clé API depuis le localStorage
-      const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0";
+      const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0"
 
       // Call DeepSeek API
       const response = await fetch("/api/chat", {
@@ -175,20 +181,63 @@ export function useChat() {
     setIsLoading(true)
 
     try {
-      // In a real implementation, you would upload the file to a server
-      // and then process it with DeepSeek API
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Si c'est une image, on peut extraire le texte avec l'OCR
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader()
+        reader.onload = async (e) => {
+          const base64Image = e.target?.result as string
 
-      // Add assistant response
-      const assistantMessage: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: `J'ai analysé votre fichier "${file.name}". Que souhaitez-vous savoir à son sujet ?`,
-        type: MessageType.TEXT,
-        timestamp: new Date().toISOString(),
+          // Récupérer la clé API depuis le localStorage
+          const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0"
+
+          // Appeler l'API OCR
+          const response = await fetch("/api/ocr", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: apiKey ? `Bearer ${apiKey}` : "",
+            },
+            body: JSON.stringify({
+              imageUrl: base64Image,
+            }),
+          })
+
+          if (!response.ok) {
+            throw new Error("Failed to extract text from image")
+          }
+
+          const data = await response.json()
+
+          // Add assistant response
+          const assistantMessage: Message = {
+            id: uuidv4(),
+            role: "assistant",
+            content: `J'ai analysé votre image et j'ai extrait le texte suivant:\n\n${data.text}`,
+            type: MessageType.TEXT,
+            timestamp: new Date().toISOString(),
+          }
+
+          setMessages((prev) => [...prev, assistantMessage])
+          setIsLoading(false)
+        }
+
+        reader.readAsDataURL(file)
+      } else {
+        // Pour les autres types de fichiers, simuler une réponse
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        // Add assistant response
+        const assistantMessage: Message = {
+          id: uuidv4(),
+          role: "assistant",
+          content: `J'ai analysé votre fichier "${file.name}". Que souhaitez-vous savoir à son sujet ?`,
+          type: MessageType.TEXT,
+          timestamp: new Date().toISOString(),
+        }
+
+        setMessages((prev) => [...prev, assistantMessage])
+        setIsLoading(false)
       }
-
-      setMessages((prev) => [...prev, assistantMessage])
     } catch (error) {
       console.error("Error processing file:", error)
 
@@ -202,7 +251,6 @@ export function useChat() {
       }
 
       setMessages((prev) => [...prev, errorMessage])
-    } finally {
       setIsLoading(false)
     }
   }
@@ -270,11 +318,17 @@ export function useChat() {
   const generateImage = async (prompt: string) => {
     if (!currentConversationId) return
 
+    // Remplacer les mentions de DeepSeek, Chine, etc.
+    const modifiedPrompt = prompt
+      .replace(/deepseek/gi, "Tosca AI")
+      .replace(/\bchine\b/gi, "Cameroun")
+      .replace(/chinoise/gi, "Camerounaise")
+
     // Add user message
     const userMessage: Message = {
       id: uuidv4(),
       role: "user",
-      content: `Génère une image: ${prompt}`,
+      content: `Génère une image: ${modifiedPrompt}`,
       type: MessageType.TEXT,
       timestamp: new Date().toISOString(),
     }
@@ -284,7 +338,7 @@ export function useChat() {
 
     try {
       // Récupérer la clé API depuis le localStorage
-      const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0";
+      const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0"
 
       // Call the image generation API
       const response = await fetch("/api/generate-image", {
@@ -293,7 +347,7 @@ export function useChat() {
           "Content-Type": "application/json",
           Authorization: apiKey ? `Bearer ${apiKey}` : "",
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt: modifiedPrompt }),
       })
 
       if (!response.ok) {
@@ -306,7 +360,7 @@ export function useChat() {
       const assistantMessage: Message = {
         id: uuidv4(),
         role: "assistant",
-        content: `Voici l'image générée selon votre description: "${prompt}"`,
+        content: `Voici l'image générée selon votre description: "${modifiedPrompt}"`,
         type: MessageType.IMAGE,
         imageUrl: data.imageUrl || "/placeholder.svg?height=512&width=512",
         timestamp: new Date().toISOString(),
