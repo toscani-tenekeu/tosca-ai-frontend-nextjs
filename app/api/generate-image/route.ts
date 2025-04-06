@@ -8,7 +8,7 @@ export async function POST(req: Request) {
 
     // Récupérer la clé API depuis les en-têtes
     const authHeader = req.headers.get("authorization") || ""
-    const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0"
+    const apiKey = "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"
 
     if (!apiKey) {
       return NextResponse.json({ error: "API key is required" }, { status: 401 })
