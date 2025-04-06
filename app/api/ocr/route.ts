@@ -8,7 +8,7 @@ export async function POST(req: Request) {
 
     // Récupérer la clé API depuis les en-têtes
     const authHeader = req.headers.get("authorization") || ""
-    const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0"
+    const apiKey = "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"
 
     if (!apiKey || !imageUrl) {
       return NextResponse.json({ error: "API key and image URL are required" }, { status: 400 })
