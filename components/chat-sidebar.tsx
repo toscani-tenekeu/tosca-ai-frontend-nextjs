@@ -134,7 +134,7 @@ export function ChatSidebar({
                 <input
                   type="password"
                   className="w-full text-xs bg-background/50 border border-border rounded p-1"
-                  placeholder="sk-0c26947361cf426a8776e21e0c3cd3d0"
+                  placeholder="sk-0c26947361cf426a8776e21e0c3*****"
                   defaultValue={localStorage.getItem("tosca_api_key") || ""}
                   onChange={(e) => {
                     localStorage.setItem("tosca_api_key", e.target.value)
