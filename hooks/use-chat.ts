@@ -102,11 +102,15 @@ export function useChat() {
     setIsLoading(true)
 
     try {
+      // Récupérer la clé API depuis le localStorage
+      const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0";
+
       // Call DeepSeek API
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: apiKey ? `Bearer ${apiKey}` : "",
         },
         body: JSON.stringify({
           messages: [...messages, userMessage].map((m) => ({
@@ -279,11 +283,15 @@ export function useChat() {
     setIsLoading(true)
 
     try {
+      // Récupérer la clé API depuis le localStorage
+      const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0";
+
       // Call the image generation API
       const response = await fetch("/api/generate-image", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: apiKey ? `Bearer ${apiKey}` : "",
         },
         body: JSON.stringify({ prompt }),
       })

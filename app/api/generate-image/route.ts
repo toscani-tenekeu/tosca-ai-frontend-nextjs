@@ -6,10 +6,14 @@ export async function POST(req: Request) {
   try {
     const { prompt } = await req.json()
 
-    // In a real implementation, this would call the DeepSeek API
-    // for image generation using the API key
+    // Récupérer la clé API depuis les en-têtes
+    const authHeader = req.headers.get("authorization") || ""
+    const apiKey = "sk-0c26947361cf426a8776e21e0c3cd3d0";
 
-    // For now, we'll simulate a response
+    // Dans une implémentation réelle, vous appelleriez l'API DeepSeek pour la génération d'images
+    // en utilisant la clé API fournie
+
+    // Pour la démo, nous simulons une réponse
     const response = {
       id: crypto.randomUUID(),
       created: Date.now(),

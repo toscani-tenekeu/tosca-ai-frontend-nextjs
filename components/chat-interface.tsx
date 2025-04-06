@@ -114,8 +114,7 @@ export function ChatInterface() {
             </Button>
           )}
           <div className="flex items-center">
-            <ToscaLogo className="h-8 w-8 mr-2" />
-            <h1 className="text-xl font-bold text-primary">TOSCA AI</h1>
+            <ToscaLogo className="h-16 w-16" />
           </div>
           <div className="flex items-center space-x-2">
             <ThemeToggle />

@@ -3,13 +3,13 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { MessageSquare, Plus, Settings, X, Trash2, Image, FileText, Mic, LogOut } from "lucide-react"
+import { MessageSquare, Plus, Settings, X, Trash2, LucideImage, FileText, Mic, LogOut, Eye } from "lucide-react"
 import type { Conversation } from "@/types/chat"
-import { ToscaLogo } from "./tosca-logo"
 import { cn } from "@/lib/utils"
 import type { User } from "@/types/auth"
 import { useI18n } from "@/context/i18n-context"
 import Link from "next/link"
+import NextImage from "next/image"
 
 interface ChatSidebarProps {
   conversations: Conversation[]
@@ -36,7 +36,7 @@ export function ChatSidebar({
   const { t } = useI18n()
 
   const getConversationIcon = (conversation: Conversation) => {
-    if (conversation.hasImages) return <Image className="h-4 w-4" />
+    if (conversation.hasImages) return <LucideImage className="h-4 w-4" />
     if (conversation.hasFiles) return <FileText className="h-4 w-4" />
     if (conversation.hasAudio) return <Mic className="h-4 w-4" />
     return <MessageSquare className="h-4 w-4" />
@@ -46,7 +46,14 @@ export function ChatSidebar({
     <div className="w-64 h-full glass-sidebar flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className="flex items-center">
-          <ToscaLogo className="h-6 w-6 mr-2" />
+          <div className="h-6 w-6 mr-2 flex items-center justify-center">
+            <NextImage
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/TOSCA_AI_removebg-preview-9RMszfr5iiGicaNpuyaZayXDtEioMF.png"
+              alt="TOSCA AI Logo"
+              width={24}
+              height={24}
+            />
+          </div>
           <h2 className="font-bold text-primary">TOSCA AI</h2>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose} className="md:hidden">
@@ -121,8 +128,31 @@ export function ChatSidebar({
 
         {showSettings && (
           <div className="mt-2 p-2 glass-card space-y-2 animate-accordion-down">
-            <p className="text-xs text-muted-foreground">API DeepSeek</p>
-            <p className="text-xs truncate text-muted-foreground">sk-0c26******************************</p>
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">API DeepSeek</p>
+              <div className="flex gap-1">
+                <input
+                  type="password"
+                  className="w-full text-xs bg-background/50 border border-border rounded p-1"
+                  placeholder="sk-0c26947361cf426a8776e21e0c3cd3d0"
+                  defaultValue={localStorage.getItem("tosca_api_key") || ""}
+                  onChange={(e) => {
+                    localStorage.setItem("tosca_api_key", e.target.value)
+                  }}
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={() => {
+                    const input = document.querySelector('input[type="password"]') as HTMLInputElement
+                    input.type = input.type === "password" ? "text" : "password"
+                  }}
+                >
+                  <Eye className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
             <Button variant="destructive" size="sm" className="w-full mt-2 gap-1">
               <Trash2 className="h-3 w-3" />
               {t("clear-history")}
